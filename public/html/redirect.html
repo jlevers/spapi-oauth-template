@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {% if missing or expired %}
+            Error
+            {% else %}
+            All set!
+            {% endif %} | SP API OAuth
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ base_path }}/style.css">
+    </head>
+    <body id="center">
+        <div>
+            <div>
+                {% if missing %}
+                <h3>Missing parameters:</h3>
+                <ul>
+                    {% for param in missing %}
+                    <li>{{ param }}</li>
+                    {% endfor %}
+                </ul>
+                {% elseif expired %}
+                Your authorization session has expired. Please restart the authorization flow <a href="/">here</a>.
+                {% else %}
+                Your account has been successfully authorized!
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

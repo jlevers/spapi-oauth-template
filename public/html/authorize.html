@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Authorize | SP API OAuth</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{{ base_path }}/style.css">
+    </head>
+    <body>
+        <div id="content">
+            {% if not authorized %}
+            <form method="POST" action="{{ current_url() }}">
+                <input type="text" name="name" id="seller-name" placeholder="Seller name" required />
+                <input type="submit" value="Authorize" />
+            </form>
+            {% else %}
+            <h2>Authorized!</h2>
+            {% endif %}
+        </div>
+    </body>
+</html>

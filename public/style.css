@@ -1,0 +1,11 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+}
+
+body#center { justify-content: center; }
+
+#content {
+    max-width: 70%;
+    line-height: 1.5em;
+}
