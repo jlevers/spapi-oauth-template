@@ -3,7 +3,6 @@
     "description": "An example project showing how to implement the Selling Partner API OAuth flow",
     "type": "project",
     "require": {
-        "jlevers/selling-partner-api": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
         "slim/slim": "^4.7",
         "guzzlehttp/psr7": "^1.7",
