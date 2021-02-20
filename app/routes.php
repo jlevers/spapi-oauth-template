@@ -18,19 +18,23 @@ return function (App $app) {
     });
 
     /*
-     * Redirect to the Amazon OAuth application authorization page when users POST /
-     * by submitting the authorization form
+     * Redirect to the Amazon OAuth application authorization page when users
+     * submit the authorization form
      */
     $app->post("/", function(Request $request, Response $response, $args) use ($DEBUG): Response {
         $sellerName = $request->getParsedBody()["name"];
+
+        session_start();
+        $state = bin2hex(random_bytes(256));
+        $_SESSION["spapi_auth_state"] = $state;
+        $_SESSION["spapi_auth_time"] = time();
 
         // Generate Amazon authorization page URL
         $oauthUrl = "https://sellercentral.amazon.com";
         $oauthPath = "/apps/authorize/consent";
         $oauthQueryParams = [
             "application_id" => $_ENV["SPAPI_APP_ID"],
-            // Each authorization request should have a unique state value associated with it
-            "state" => $sellerName . "|" . strval(time()),
+            "state" => $state,
         ];
 
         // When testing an application that hasn't yet been approved and listed on the Amazon
@@ -44,6 +48,7 @@ return function (App $app) {
                    ->withPath($oauthPath);
         $uri = $uri->withQueryValues($uri, $oauthQueryParams);
 
+        $response = $response->withHeader("Referrer-Policy", "no-referrer");
         // Redirect to Amazon's authorization page
         $response = $response->withHeader("Location", strval($uri));
         return $response;
@@ -57,7 +62,6 @@ return function (App $app) {
      * make SP API requests on the user's behalf.
      */
     $app->get("/redirect", function (Request $request, Response $response, $args): Response {
-        $FIVE_MIN_SECS = 60 * 5;
         $queryString = $request->getUri()->getQuery();
         parse_str($queryString, $queryParams);
 
@@ -76,15 +80,18 @@ return function (App $app) {
             }
         }
         if (count($missing) > 0) {
-            return $render(["missing" => $missing]);
+            return $render(["err" => true, "missing" => $missing]);
         }
 
-        // Parse timestamp out of the state value. The seller has to authorize the app within
-        // 5 minutes of starting the authorization flow
-        [$sellerName, $time] = explode("|", $queryParams["state"]);
-        $stateTime = intval($time);
-        if (time() - $stateTime > $FIVE_MIN_SECS) {
-            return $render(["expired" => true]);
+        if (!isset($_SESSION)) {
+            return $render(["err" => true, "no_session" => true]);
+        }
+        if ($queryParams["state"] !== $_SESSION["spapi_auth_state"]) {
+            return $render(["err" => true, "invalid_state"]);
+        }
+        // The seller has to authorize the app within 30 minutes of starting the authorization flow
+        if (time() - $_SESSION["spapi_auth_time"] > 1800) {
+            return $render(["err" => true, "expired" => true]);
         }
 
         [

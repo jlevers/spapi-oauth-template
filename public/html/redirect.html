@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>
-            {% if missing or expired %}
+            {% if err %}
             Error
             {% else %}
             All set!
@@ -24,6 +24,10 @@
                 </ul>
                 {% elseif expired %}
                 Your authorization session has expired. Please restart the authorization flow <a href="/">here</a>.
+                {% elseif no_session %}
+                No session or state data could be found for your account. Please restart the authorization flow <a href="/">here</a>.
+                {% elseif invalid_state %}
+                Your incoming authorization state value does not match the state value from your initial authorization request. Please restart the authorization flow <a href="/">here</a>.
                 {% else %}
                 Your account has been successfully authorized!
                 {% endif %}
