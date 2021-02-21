@@ -22,8 +22,6 @@ return function (App $app) {
      * submit the authorization form
      */
     $app->post("/", function(Request $request, Response $response, $args) use ($DEBUG): Response {
-        $sellerName = $request->getParsedBody()["name"];
-
         session_start();
         $state = bin2hex(random_bytes(256));
         $_SESSION["spapi_auth_state"] = $state;
@@ -119,6 +117,6 @@ return function (App $app) {
             "expires_in" => $secsTillExpiration,
         ] = $body;
 
-        return $render();
+        return $render($body);
     });
 };
