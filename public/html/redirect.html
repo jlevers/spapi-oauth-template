@@ -30,6 +30,12 @@
                 Your incoming authorization state value does not match the state value from your initial authorization request. Please restart the authorization flow <a href="/">here</a>.
                 {% else %}
                 Your account has been successfully authorized!
+                <br>
+                Refresh token: {% refresh_token %}
+                <br>
+                Access token: {% access_token %}
+                <br>
+                Seconds till access token expiration: {% expires_in %}
                 {% endif %}
             </div>
         </div>

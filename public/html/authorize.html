@@ -10,7 +10,6 @@
         <div id="content">
             {% if not authorized %}
             <form method="POST" action="{{ current_url() }}">
-                <input type="text" name="name" id="seller-name" placeholder="Seller name" required />
                 <input type="submit" value="Authorize" />
             </form>
             {% else %}
