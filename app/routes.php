@@ -78,19 +78,19 @@ return function (App $app) {
             }
         }
         if (count($missing) > 0) {
-            return $render(["err" => true, "missing" => $missing]);
+            return $render(["err" => "missing", "missing" => $missing]);
         }
 
         session_start();
         if (!isset($_SESSION)) {
-            return $render(["err" => true, "no_session" => true]);
+            return $render(["err" => "no_session"]);
         }
         if ($queryParams["state"] !== $_SESSION["spapi_auth_state"]) {
-            return $render(["err" => true, "invalid_state"]);
+            return $render(["err" => "invalid_state"]);
         }
         // The seller has to authorize the app within 30 minutes of starting the authorization flow
         if (time() - $_SESSION["spapi_auth_time"] > 1800) {
-            return $render(["err" => true, "expired" => true]);
+            return $render(["err" => "expired"]);
         }
 
         [
@@ -100,14 +100,24 @@ return function (App $app) {
 
         // Get a refresh token using the OAuth code that Amazon passed us as a query parameter
         $client = new GuzzleHttp\Client();
-        $res = $client->post("https://api.amazon.com/auth/o2/token", [
-            GuzzleHttp\RequestOptions::JSON => [
-                "grant_type" => "authorization_code",
-                "code" => $oauthCode,
-                "client_id" => $_ENV["LWA_CLIENT_ID"],
-                "client_secret" => $_ENV["LWA_CLIENT_SECRET"],
-            ]
-        ]);
+        $res = null;
+        try {
+            $res = $client->post("https://api.amazon.com/auth/o2/token", [
+                GuzzleHttp\RequestOptions::JSON => [
+                    "grant_type" => "authorization_code",
+                    "code" => $oauthCode,
+                    "client_id" => $_ENV["LWA_CLIENT_ID"],
+                    "client_secret" => $_ENV["LWA_CLIENT_SECRET"],
+                ]
+            ]);
+        } catch (GuzzleHttp\Exception\ClientException $e) {
+            $info = json_decode($e->getResponse()->getContents(), true);
+            if ($info["error"] === "invalid_grant") {
+                return $render(["err" => "bad_oauth_token"]);
+            } else {
+                throw $e;
+            }
+        }
 
         // Parse out the refresh token (long-lived), the access token (short-lived), and the
         // number of seconds until the access token expires
