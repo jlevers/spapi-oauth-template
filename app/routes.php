@@ -81,6 +81,7 @@ return function (App $app) {
             return $render(["err" => true, "missing" => $missing]);
         }
 
+        session_start();
         if (!isset($_SESSION)) {
             return $render(["err" => true, "no_session" => true]);
         }
