@@ -15,19 +15,21 @@
     <body id="center">
         <div>
             <div>
-                {% if missing %}
+                {% if err == "missing" %}
                 <h3>Missing parameters:</h3>
                 <ul>
                     {% for param in missing %}
                     <li>{{ param }}</li>
                     {% endfor %}
                 </ul>
-                {% elseif expired %}
+                {% elseif err == "expired" %}
                 Your authorization session has expired. Please restart the authorization flow <a href="/">here</a>.
-                {% elseif no_session %}
+                {% elseif err == "no_session" %}
                 No session or state data could be found for your account. Please restart the authorization flow <a href="/">here</a>.
-                {% elseif invalid_state %}
+                {% elseif err == "invalid_state" %}
                 Your incoming authorization state value does not match the state value from your initial authorization request. Please restart the authorization flow <a href="/">here</a>.
+                {% elseif err == "bad_oauth_token" %}
+                Trying to fetch another refresh token with the same OAuth token failed, because the OAuth token has expired.
                 {% else %}
                 Your account has been successfully authorized!
                 <br><br>
