@@ -128,6 +128,17 @@ return function (App $app) {
             "expires_in" => $secsTillExpiration,
         ] = $body;
 
+        $config = new Configuration(["refreshToken" => $refreshToken]);
+        $api = SellingPartnerApi\SellersApi($config);
+
+        $success = false;
+        try {
+            $result = $api->getMarketplaceParticipations();
+            $success = true;
+        } catch (Exception $e) {}
+
+        $params = array_merge($body, ["success" => $success]);
+
         return $render($body);
     });
 };
