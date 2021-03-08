@@ -111,7 +111,7 @@ return function (App $app) {
                 ]
             ]);
         } catch (GuzzleHttp\Exception\ClientException $e) {
-            $info = json_decode($e->getResponse()->getContents(), true);
+            $info = json_decode($e->getResponse()->getBody()->getContents(), true);
             if ($info["error"] === "invalid_grant") {
                 return $render(["err" => "bad_oauth_token"]);
             } else {
@@ -128,17 +128,18 @@ return function (App $app) {
             "expires_in" => $secsTillExpiration,
         ] = $body;
 
-        $config = new Configuration(["refreshToken" => $refreshToken]);
-        $api = SellingPartnerApi\SellersApi($config);
+        $config = new SellingPartnerApi\Configuration(["refreshToken" => $refreshToken]);
+        $api = new SellingPartnerApi\Api\SellersApi($config);
 
-        $success = false;
+        $params = $body;
         try {
             $result = $api->getMarketplaceParticipations();
             $success = true;
-        } catch (Exception $e) {}
+            $params["success"] = true;
+        } catch (Exception $e) {
+            print_r($e);
+        }
 
-        $params = array_merge($body, ["success" => $success]);
-
-        return $render($body);
+        return $render($params);
     });
 };
