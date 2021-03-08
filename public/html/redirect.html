@@ -13,33 +13,33 @@
         <link rel="stylesheet" href="{{ base_path }}/style.css">
     </head>
     <body id="center">
-        <div>
-            <div>
-                {% if err == "missing" %}
-                <h3>Missing parameters:</h3>
-                <ul>
-                    {% for param in missing %}
-                    <li>{{ param }}</li>
-                    {% endfor %}
-                </ul>
-                {% elseif err == "expired" %}
-                Your authorization session has expired. Please restart the authorization flow <a href="/">here</a>.
-                {% elseif err == "no_session" %}
-                No session or state data could be found for your account. Please restart the authorization flow <a href="/">here</a>.
-                {% elseif err == "invalid_state" %}
-                Your incoming authorization state value does not match the state value from your initial authorization request. Please restart the authorization flow <a href="/">here</a>.
-                {% elseif err == "bad_oauth_token" %}
-                Trying to fetch another refresh token with the same OAuth token failed, because the OAuth token has expired.
-                {% else %}
-                Your account has been successfully authorized!
-                <br><br>
-                Refresh token: <pre>{{ refresh_token }}</pre>
-                <br><br>
-                Access token: <pre>{{ access_token }}</pre>
-                <br><br>
-                Seconds till access token expiration: <pre>{{ expires_in }}</pre>
-                {% endif %}
-            </div>
+        <div id="content">
+            {% if err == "missing" %}
+            <h3>Missing parameters:</h3>
+            <ul>
+                {% for param in missing %}
+                <li>{{ param }}</li>
+                {% endfor %}
+            </ul>
+            {% elseif err == "expired" %}
+            Your authorization session has expired. Please restart the authorization flow <a href="/">here</a>.
+            {% elseif err == "no_session" %}
+            No session or state data could be found for your account. Please restart the authorization flow <a href="/">here</a>.
+            {% elseif err == "invalid_state" %}
+            Your incoming authorization state value does not match the state value from your initial authorization request. Please restart the authorization flow <a href="/">here</a>.
+            {% elseif err == "bad_oauth_token" %}
+            Trying to fetch another refresh token with the same OAuth token failed, because the OAuth token has expired.
+            {% else %}
+            Your account has been successfully authorized!
+            <br><br>
+            Refresh token: <pre>{{ refresh_token }}</pre>
+            <br><br>
+            Access token: <pre>{{ access_token }}</pre>
+            <br><br>
+            Seconds till access token expiration: <pre>{{ expires_in }}</pre>
+            <br><br>
+            Selling Partner API call: {% if success %}<span id="success">success{% else %}<span id="failure">failure{% endif %}</span>
+            {% endif %}
         </div>
     </body>
 </html>
