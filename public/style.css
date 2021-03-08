@@ -9,3 +9,15 @@ body#center { justify-content: center; }
     max-width: 70%;
     line-height: 1.5em;
 }
+
+pre {
+    white-space: pre-wrap;
+}
+
+#success {
+    color: green;
+}
+
+#failure {
+    color: red;
+}

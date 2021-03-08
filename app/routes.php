@@ -134,7 +134,6 @@ return function (App $app) {
         $params = $body;
         try {
             $result = $api->getMarketplaceParticipations();
-            $success = true;
             $params["success"] = true;
         } catch (Exception $e) {
             print_r($e);
