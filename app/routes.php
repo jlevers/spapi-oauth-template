@@ -28,7 +28,7 @@ return function (App $app) {
         $_SESSION["spapi_auth_time"] = time();
 
         // Generate Amazon authorization page URL
-        $oauthUrl = "https://sellercentral.amazon.com";
+        $oauthUrl = $_ENV["SPAPI_OAUTH_ENDPOINT"];
         $oauthPath = "/apps/authorize/consent";
         $oauthQueryParams = [
             "application_id" => $_ENV["SPAPI_APP_ID"],
