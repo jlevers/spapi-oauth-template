@@ -128,7 +128,17 @@ return function (App $app) {
             "expires_in" => $secsTillExpiration,
         ] = $body;
 
-        $config = new SellingPartnerApi\Configuration(["refreshToken" => $refreshToken]);
+        $config = new SellingPartnerApi\Configuration([
+            "lwaClientId" => "<LWA client ID>",
+            "lwaClientSecret" => "<LWA client secret>",
+            "lwaRefreshToken" => $refreshToken,
+            // If you don't pass the lwaAccessToken key/value, the library will automatically generate an access
+            // token based on the refresh token above
+            "lwaAccessToken" => $accessToken,
+            "awsAccessKeyId" => "<AWS access key ID>",
+            "awsSecretAccessKey" => "<AWS secret access key>",
+            "endpoint" => SellingPartnerApi\Endpoint::NA,
+        ]);
         $api = new SellingPartnerApi\Api\SellersApi($config);
 
         $params = $body;
