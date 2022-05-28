@@ -139,7 +139,7 @@ return function (App $app) {
             "awsSecretAccessKey" => "<AWS secret access key>",
             "endpoint" => SellingPartnerApi\Endpoint::NA,
         ]);
-        $api = new SellingPartnerApi\Api\SellersApi($config);
+        $api = new SellingPartnerApi\Api\SellersV1Api($config);
 
         $params = $body;
         try {
